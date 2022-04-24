@@ -26,12 +26,62 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(BlastRegionActiveOrDeactive)
+	{
+		Collision->BodyInstance.bNotifyRigidBodyCollision = true;
+		Collision->SetCollisionObjectType(ECC_Visibility);
+	}
+	else
+	Collision->OnComponentBeginOverlap.AddDynamic(this,&AProjectile::OnBeginOverlap);
+		
+	
 	GetWorld()->GetTimerManager().SetTimer(Timer, this,&AProjectile::MoveTick, MoveRate, true);
 	GetWorld()->GetTimerManager().SetTimer(TimerDestroed, this,&AProjectile::SelfDestroed, SelfDestroedSec, false);
 }
 
+void AProjectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
+	FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+	
+	TArray<FHitResult> Targets;                                  
+	GetWorld()->SweepMultiByChannel(Targets, GetActorLocation(), GetActorLocation(), GetActorRotation().Quaternion(), ECollisionChannel::ECC_Visibility, FCollisionShape::MakeSphere(BlastRegion->GetScaledSphereRadius()));
+	
+	for(auto& HitTarget:Targets)
+	{
+		auto Target = Cast<IDamageTarget>(HitTarget.Actor);
+		if(Target)
+		{
+			FDamageData DamageData;
+			DamageData.DamageValue = Damage;
+			DamageData.Instigator = GetInstigator();
+			Target->TakeDamage(DamageData);
+		}
+		
+		if(Cast<ABaseProjectile>(HitTarget.Actor))
+		{
+			continue;
+		}
+		
+		if(HitTarget.Actor.IsValid())
+		{
+			const auto Root = Cast<UPrimitiveComponent>(HitTarget.Actor->GetRootComponent());
+			
+			if(Root && Root->IsSimulatingPhysics() && Root)
+			{
+				
+				auto Impulse = GetActorForwardVector() * 10000 ;
+				Root->AddImpulseAtLocation(Impulse, HitTarget.Location);
+			}
+			
+			Destroy();
+		}
+	}
+}
+
 void AProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 
 {
 	if (OtherActor == this)

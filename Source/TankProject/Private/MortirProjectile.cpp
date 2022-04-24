@@ -12,10 +12,7 @@ AMortirProjectile::AMortirProjectile()
 	Collision->BodyInstance.bNotifyRigidBodyCollision = true;
 	
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("MovementComponent");
-
-	BlastRegion = CreateDefaultSubobject<USphereComponent>("BlastRegion");
-	BlastRegion->SetupAttachment(RootComponent);
-
+	
 	FlyEffect = CreateDefaultSubobject<UParticleSystemComponent>("FlyEffect");
 	FlyEffect->SetupAttachment(Mesh);
 
@@ -70,6 +67,15 @@ void AMortirProjectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UP
 void AMortirProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//if(BlastRegionActiveOrDeactive)
+//	{
+	//	Collision->BodyInstance.bNotifyRigidBodyCollision = true;
+	//	Collision->SetCollisionObjectType(ECC_MAX);
+	//}
+	//else
+	//	Collision->OnComponentBeginOverlap.AddDynamic(this,&AMortirProjectile::)
+	
 	GetWorld()->GetTimerManager().SetTimer(TimerDestroed, this,&AMortirProjectile::SelfDestroed, SelfDestroedSec, false);
 }
 

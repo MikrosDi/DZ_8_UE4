@@ -4,6 +4,7 @@
 #include "BaseProjectile.h"
 
 #include "DamageTarget.h"
+#include "Turret.h"
 
 // Sets default values
 ABaseProjectile::ABaseProjectile()
@@ -16,12 +17,18 @@ ABaseProjectile::ABaseProjectile()
 	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
 	Mesh->SetupAttachment(RootComponent);
+
+	BlastRegion = CreateDefaultSubobject<USphereComponent>("BlastRegion");
+	BlastRegion->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void ABaseProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	
+	
 }
 // Called every frame
 void ABaseProjectile::Tick(float DeltaTime)

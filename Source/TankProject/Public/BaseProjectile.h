@@ -20,6 +20,9 @@ public:
 	USphereComponent* Collision;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	USphereComponent* BlastRegion;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* Mesh;
 
 protected:

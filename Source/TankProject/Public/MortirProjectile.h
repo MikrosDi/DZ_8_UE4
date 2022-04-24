@@ -18,15 +18,15 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UProjectileMovementComponent* MovementComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	USphereComponent* BlastRegion;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UParticleSystemComponent* FlyEffect;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UParticleSystemComponent* BoomEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BlastRegion")
+	bool BlastRegionActiveOrDeactive = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire Projectile")
 	int SelfDestroedSec = 5;

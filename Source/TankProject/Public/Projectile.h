@@ -34,6 +34,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Projectile")
 	float Damage = 20;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BlastRegion")
+	bool BlastRegionActiveOrDeactive = false;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -43,7 +46,9 @@ private:
 	FTimerHandle Timer;
 	FTimerHandle TimerDestroed;
 	
-
+	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp,
+	 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	
 	UFUNCTION()
 		void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
