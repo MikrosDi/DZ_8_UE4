@@ -51,6 +51,7 @@ void ATurret::BeginPlay()
 		TurretCannon->SetInstigator(this);
 		
 	}
+	TurretPosition = GetActorLocation();
 }
 
 void ATurret::TakeDamage(FDamageData Damage)
@@ -147,7 +148,6 @@ void ATurret::Fire()
 
 void ATurret::Targeting()
 {
-	
 		if(!Target.IsValid())
 		{
 			FindNextTarget();
@@ -156,9 +156,31 @@ void ATurret::Targeting()
 				return;
 			}
 		}
-		auto TargetRotation = UKismetMathLibrary::FindLookAtRotation(TurretMesh->GetComponentLocation(),Target->GetActorLocation());
-	    GEngine->AddOnScreenDebugMessage(-1, 1,FColor::Red,FString(TEXT("")));
-	    TargetRotation.Pitch = TurretMesh->GetComponentRotation().Pitch;   
+	auto TargetRotation = UKismetMathLibrary::FindLookAtRotation(TurretMesh->GetComponentLocation(),Target->GetActorLocation());
+	
+	if (!TargetZ)
+	{
+		auto TTarget = Cast<ATankPawn>(Target);
+		TargetZ = TTarget->BodyMesh->GetComponentLocation().Z;
+	}
+	auto TargetPosition = Target->GetActorLocation();
+	auto x = FVector::Dist2D(TurretPosition, TargetPosition) / 125;
+
+	float P = FMath::RadiansToDegrees(FMath::Atan(1/FMath::Tan(S2 + FMath::Sqrt(S4 - G * (G * FMath::Pow(x, 2) + 2 * S2 * (0.5))) / (G * x))));
+	if (x > 4.5f)
+	{
+		P = 45.0f;
+	}
+	float RotateY = TargetRotation.Yaw;
+
+	TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), { P, RotateY, 0.f }, TargetingSpeed));
+
+	FRotator t = { P, RotateY, 0.f };
+	
+	     TargetRotation.Yaw = TurretMesh->GetComponentRotation().Yaw;
+	     TargetRotation.Roll = TurretMesh->GetComponentRotation().Roll;
+	     TargetRotation.Pitch = TurretMesh->GetComponentRotation().Pitch-30;
+	
 		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), TargetRotation, TargetingSpeed));
 		auto TargetingDirection = TurretMesh->GetForwardVector();
 		auto PlayerDirection =Target->GetActorLocation() - GetActorLocation();
@@ -166,11 +188,10 @@ void ATurret::Targeting()
 		auto Angle=FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(TargetingDirection,PlayerDirection)));
 		if(Angle < AimSlack)
 		{
-			
 			Fire();
 		}
-	
 }
+
 // Called every frame
 void ATurret::Tick(float DeltaTime)
 {
@@ -180,24 +201,22 @@ void ATurret::Tick(float DeltaTime)
 
 void ATurret::OnHealthChanged(float CurrentHealth)
 {
-	GEngine->AddOnScreenDebugMessage(987665, 1, FColor::White,
-		FString::Printf(TEXT("Enemy Health: %f"), CurrentHealth));
+	//GEngine->AddOnScreenDebugMessage(987665, 1, FColor::White,
+	//	FString::Printf(TEXT("Enemy Health: %f"), CurrentHealth));
 }
 
 void ATurret::OnDeath()
 {
 	auto Temp = GetActorLocation();
-	
 	DeadEffect2->ActivateSystem();
 	AudioDeadEffect2->Play();
 	SetActorLocation({-1000, -1000, -1000});
 	DeadEffect2->SetWorldLocation(Temp);
 	AudioDeadEffect2->SetWorldLocation(Temp);
-
 	GetWorld()->GetTimerManager().SetTimer(TimerDestroed,this,&ATurret::SelfDestroed,3,false);
 	
-	GEngine->AddOnScreenDebugMessage(-123124, 1, FColor::White,
-		FString::Printf(TEXT("Enemy Turret Destroed")));
+	//GEngine->AddOnScreenDebugMessage(-123124, 1, FColor::White,
+	//	FString::Printf(TEXT("Enemy Turret Destroed")));
 }
 
 void ATurret::SelfDestroed()

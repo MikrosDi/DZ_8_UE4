@@ -72,38 +72,44 @@ protected:
 	UFUNCTION()
 	virtual void OnEndOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, int I);
 	
-	
 	UFUNCTION(BlueprintCallable)
 	void FireAnyway();
 	
-public:	
+public:
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
 	void OnHealthChanged(float CurrentHealth);
 
-	/*
-	float GetHealth() const {return Health;}
-	void SetHealth(float val){Health = val;}
-
-	float GetMaxHealth() const {return MaxHealth;}
-	void SetMaxHealth(float val){MaxHealth = val;}
+	float S = 1100.0f / 100;
+	float S2 = FMath::Pow(S, 2);
+	float S4 = FMath::Pow(S, 4);
 	
-	float Health;
-	float MaxHealth = 100;
+	float G = 9.81f;
+	
+	float TurretZ{};
+	float TargetZ{};
+	
+	FVector TurretPosition{};
 
-	float HealthTweenDirection;
-*/
 private:
 	
 	void FindNextTarget();
-	void Targeting();
+	
+	virtual void Targeting();
+	
 	void Fire();
+	
 	void OnDeath();
-void SelfDestroed();
+	
+    void SelfDestroed();
 	
 	UPROPERTY()
 	TArray<AActor*> OtherActors;
 	TWeakObjectPtr<AActor> Target;
+	
+	class AMortirProjectile* MortirProjectile;
 	
 	FTimerHandle TimerDestroed;
 	

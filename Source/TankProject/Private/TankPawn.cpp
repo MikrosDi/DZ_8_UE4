@@ -26,9 +26,9 @@ ATankPawn::ATankPawn():AParentStarterClass()
 	ArmComponent = CreateDefaultSubobject<USpringArmComponent>("ArmComponent");
 	ArmComponent->SetupAttachment(RootComponent);
 	ArmComponent->SetRelativeRotation(FRotator(-90, 0, 0));
-	ArmComponent->bInheritYaw = false;
-	ArmComponent->bInheritRoll = false;
-	ArmComponent->bInheritPitch = false;
+	//ArmComponent->bInheritYaw = false;
+	//ArmComponent->bInheritRoll = false;
+//	ArmComponent->bInheritPitch = false;
 	
 	
 	CameraComponent =CreateDefaultSubobject<UCameraComponent>("CameraComponent");
@@ -315,18 +315,18 @@ void ATankPawn::OnHealthChanged(float CurrentHealth)
 {
 	TakeHitEffect->ActivateSystem();
 	AudioTakeHitEffect->Play();
-	GEngine->AddOnScreenDebugMessage(987665, 10, FColor::White,FString::Printf(TEXT("Health: %f"), CurrentHealth));
+	//GEngine->AddOnScreenDebugMessage(987665, 10, FColor::White,FString::Printf(TEXT("Health: %f"), CurrentHealth));
 }
 
 void ATankPawn::OnDeath()
 {
 	
-	GEngine->AddOnScreenDebugMessage(9876615, 10, FColor::White,FString::Printf(TEXT("You Dead")));
+	//GEngine->AddOnScreenDebugMessage(9876615, 10, FColor::White,FString::Printf(TEXT("You Dead")));
 	
 	DeadEffect->ActivateSystem();
 
-	if(!GameOverWidget->IsInViewport())
-	GameOverWidget->AddToViewport();
+	//if(!GameOverWidget->IsInViewport())
+	//GameOverWidget->AddToViewport();
 
 	GetWorld()->GetTimerManager().SetTimer(QuitGame, this,&ATankPawn::QuitGameStopSimulation, QuitGameSec, true);
 	

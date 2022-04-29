@@ -196,13 +196,13 @@ void AEnemyPawn::OnDeath()
 
 	GetWorld()->GetTimerManager().SetTimer(TimerDestroed,this,&AEnemyPawn::SelfDestroed,3,false);
 	
-	GEngine->AddOnScreenDebugMessage(9871, 3, FColor::White,FString::Printf(TEXT("Enemy Tank Destroyed")));
+	//GEngine->AddOnScreenDebugMessage(9871, 3, FColor::White,FString::Printf(TEXT("Enemy Tank Destroyed")));
 	//UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetNumPlayerControllers(),EQuitPreference::Quit,true);
 }
 
 void AEnemyPawn::OnHealthChanged(float CurrentHealth)
 {
-	GEngine->AddOnScreenDebugMessage(9871662, 3, FColor::White,FString::Printf(TEXT("Health Enemy Tank: %f"), CurrentHealth));
+	//GEngine->AddOnScreenDebugMessage(9871662, 3, FColor::White,FString::Printf(TEXT("Health Enemy Tank: %f"), CurrentHealth));
 }
 
 void AEnemyPawn::SelfDestroed()
